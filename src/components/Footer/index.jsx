@@ -1,6 +1,6 @@
 import React from 'react'
 import { A, Footer } from './myFooter.styles';
-import SocialSVG from './SocialSVG';
+import SocialSVG from './components/SocialSVG';
 
 const MyFooter = () => {
     return (

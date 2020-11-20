@@ -3,6 +3,7 @@ import styled from 'styled-components';
 export const Footer = styled.footer`
     display: block;
     padding-bottom: 2rem;
+    padding-top: 1rem;
     text-align: center;
 
     @media screen and (min-width: 30em){
@@ -22,6 +23,6 @@ export const A = styled.a`
     transition: color .15s ease-in;
     
     :hover, :focus-visible {
-        color: var(--color-lightWhiteBlue);
+        color: black;
     }
 `;

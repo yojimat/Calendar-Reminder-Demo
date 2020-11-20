@@ -1,14 +1,15 @@
 import React from 'react'
 import { Header } from './calendarPage.styles';
-import MyFooter from '../../components/Footer'
+import MyFooter from '../../components/footer'
+import Calendar from '../../components/calendar';
 
 const CalendarPage = () => {
     return (
-        <section>
+        <main>
             <Header>Calendar Reminder Demo</Header>
-            
+            <Calendar />       
             <MyFooter />      
-        </section>
+        </main>
     )
 }
 

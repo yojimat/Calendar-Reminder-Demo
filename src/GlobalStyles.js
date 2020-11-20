@@ -9,11 +9,13 @@ export default createGlobalStyle`
     -moz-osx-font-smoothing: grayscale;
   }
   :root {
-    --color-background: #3c3c3b;
+    --color-background: #fff;
     --color-cyanBlue: #2f74b5;
     --color-lightGray: #a5a5a5;
     --color-lightWhiteBlue: #f2f2f2;
     --color-lightBlue: #0fb5e9;
+    --border-color: #969696;
+    --cell-hover-color: #b9b6b6;
   }
   html, body, #root {
     height: 100%;

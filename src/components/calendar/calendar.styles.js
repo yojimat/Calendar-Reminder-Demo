@@ -4,7 +4,9 @@ export const CalendarDiv = styled.div`
     display: block;
     margin: 0 auto;
     margin-top: 1rem;
-    max-width: 75%;
+    @media (min-width: 800px) {
+        width: 75%;
+    }
     background-color: white;
 `;
 

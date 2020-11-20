@@ -10,7 +10,7 @@ const Calendar = () => {
         [selectedDate, setSelectedDate] = useState(new Date());
     
     return (
-        <CalendarDiv className="calendar">
+        <CalendarDiv>
             <Header currentMonth={currentMonth} setCurrentMonth={setCurrentMonth}/>
             <Days />
             <Cells currentMonth={currentMonth} 

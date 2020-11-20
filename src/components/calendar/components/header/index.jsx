@@ -16,19 +16,19 @@ const CalendarHeader = ({ currentMonth, setCurrentMonth }) => {
     };
 
     return (
-      <Header className="header row flex-middle">
-        <ColStart className="col col-start">
-          <Icon className="icon" onClick={goPrevMonth}>
+      <Header>
+        <ColStart>
+          <Icon onClick={goPrevMonth}>
             chevron_left
           </Icon>
         </ColStart>
-        <ColCenter className="col col-center">
+        <ColCenter>
           <span>
             {format(currentMonth, dateFormat)}
           </span>
         </ColCenter>
-        <ColEnd className="col col-end" onClick={goNextMonth}>
-          <Icon className="icon">chevron_right</Icon>
+        <ColEnd onClick={goNextMonth}>
+          <Icon>chevron_right</Icon>
         </ColEnd>
       </Header>
     );

@@ -6,9 +6,17 @@ import { startOfMonth
     , format
     , isSameMonth
     , isSameDay
-    , parse
     , addDays } from 'date-fns';
 import { Body, CellRow, CellCol, Number, Bg } from './cells.styles';
+
+const setStatus = (day, monthStart, selectedDate) => {
+    if(!isSameMonth(day, monthStart))
+        return "disabled"
+    else if(isSameDay(day, selectedDate)) 
+        return "selected"
+    else
+        return "normal";
+};
 
 const Cells = ({ currentMonth, selectedDate, setSelectedDate }) => {
     const monthStart = startOfMonth(currentMonth)
@@ -23,25 +31,22 @@ const Cells = ({ currentMonth, selectedDate, setSelectedDate }) => {
     let days = []
         , day = startDate
         , formattedDate = "";
-            
+    
     while (day <= endDate) {
         for (let i = 0; i < 7; i++) {
             formattedDate = format(day, dateFormat);
             
-            const cloneDay = day;
+            const cloneDay = day
+                , status = setStatus(day, monthStart, selectedDate);
 
             days.push(
                 <CellCol
-                className={`col cell ${
-                    !isSameMonth(day, monthStart)
-                    ? "disabled"
-                    : isSameDay(day, selectedDate) ? "selected" : ""
-                }`}
+                status={status}
                 key={day}
-                onClick={() => onDateClick(parse(cloneDay))}
+                onClick={() => onDateClick(cloneDay)}
                 >
-                    <Number className="number">{formattedDate}</Number>
-                    <Bg className="bg">{formattedDate}</Bg>
+                    <Number>{formattedDate}</Number>
+                    <Bg selected={status === "selected"} >{formattedDate}</Bg>
                 </CellCol>
             );
 
@@ -49,7 +54,7 @@ const Cells = ({ currentMonth, selectedDate, setSelectedDate }) => {
         }
 
         rows.push(
-            <CellRow className="row" key={day}>
+            <CellRow key={day}>
                 {days}
             </CellRow>
         );
@@ -57,7 +62,7 @@ const Cells = ({ currentMonth, selectedDate, setSelectedDate }) => {
         days = [];
     }
 
-    return <Body className="body">{rows}</Body>;
+    return <Body>{rows}</Body>;
 }
 
 export default Cells;

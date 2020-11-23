@@ -1,14 +1,16 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-
-import CalendarPage  from './pages/CalendarPage/index';
+import CalendarPage  from './pages/CalendarPage';
+import { CalendarPageProvider } from './pages/CalendarPage/calendarPageProvider';
 import GlobalStyles from './GlobalStyles';
 
 //import reportWebVitals from './reportWebVitals';
 
 ReactDOM.render(
   <React.StrictMode>
-    <CalendarPage />
+    <CalendarPageProvider>
+      <CalendarPage />
+    </CalendarPageProvider>
     <GlobalStyles/>
   </React.StrictMode>,
   document.getElementById('root')

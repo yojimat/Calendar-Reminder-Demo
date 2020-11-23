@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { startOfMonth
     , endOfMonth
     , startOfWeek
@@ -7,7 +7,8 @@ import { startOfMonth
     , isSameMonth
     , isSameDay
     , addDays } from 'date-fns';
-import { Body, CellRow, CellCol, Number, Bg } from './cells.styles';
+import { Body, CellRow } from './cells.styles';
+import Cell from './cell';
 
 const setStatus = (day, monthStart, selectedDate) => {
     if(!isSameMonth(day, monthStart))
@@ -18,15 +19,15 @@ const setStatus = (day, monthStart, selectedDate) => {
         return "normal";
 };
 
-const Cells = ({ currentMonth, selectedDate, setSelectedDate }) => {
+const Cells = ({ currentMonth }) => {
+    const [selectedDate, setSelectedDate] = useState(new Date());
+    
     const monthStart = startOfMonth(currentMonth)
         , monthEnd = endOfMonth(monthStart)
         , startDate = startOfWeek(monthStart)
         , endDate = endOfWeek(monthEnd)
         , dateFormat = "d"
         , rows = [];
-    
-    const onDateClick = day => setSelectedDate(day);
 
     let days = []
         , day = startDate
@@ -39,16 +40,11 @@ const Cells = ({ currentMonth, selectedDate, setSelectedDate }) => {
             const cloneDay = day
                 , status = setStatus(day, monthStart, selectedDate);
 
-            days.push(
-                <CellCol
-                status={status}
-                key={day}
-                onClick={() => onDateClick(cloneDay)}
-                >
-                    <Number>{formattedDate}</Number>
-                    <Bg selected={status === "selected"} >{formattedDate}</Bg>
-                </CellCol>
-            );
+            days.push(<Cell key={day} 
+                formattedDate={formattedDate} 
+                day={cloneDay}
+                setSelectedDate={setSelectedDate}
+                status={status}/>);
 
             day = addDays(day, 1);
         }

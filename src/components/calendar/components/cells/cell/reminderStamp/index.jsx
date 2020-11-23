@@ -3,7 +3,11 @@ import { RemindersContext } from '../../../../../reminders/remindersProvider';
 import { Reminder } from './reminderStamp.styles'
 
 const ReminderStamp = ({ reminder,fullStamp, setOpen, setView }) => {
-    const { setSelectedReminder, selectedReminder, reminderList } = useContext(RemindersContext);
+    const { setSelectedReminder, selectedReminder, reminderList, view } = useContext(RemindersContext);
+
+    useEffect(() => {
+        setSelectedReminder(reminderList.find(el => el.uuid === reminder.uuid));
+    }, [view])
 
     const openView = () => {
         // if (fullStamp)
@@ -14,8 +18,8 @@ const ReminderStamp = ({ reminder,fullStamp, setOpen, setView }) => {
         // else
         //     setView("save");
 
-        // setOpen(true);
-        setView("save")
+        setSelectedReminder(reminderList.find(el => el.uuid === reminder.uuid));
+        setView("save");
     };
 
     return (

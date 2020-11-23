@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 
+//refactor to interpret 3 values not one
 const middleValueHex = Math.round(parseInt("ffffff", 16)/2);
 
 export const Reminder = styled.div`

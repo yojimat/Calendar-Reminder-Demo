@@ -11,7 +11,7 @@ const Cell = ({ formattedDate, day, status, setSelectedDate }) => {
         , { setView, reminderList } = useContext(RemindersContext);
 
     useEffect(() => {
-        const newArray = reminderList.filter(element => element.day === day);
+        const newArray = reminderList.filter(element => element.day === getDate(day));
         setReminderStampList([...newArray]);
     }, [reminderList]);
 
@@ -43,6 +43,7 @@ const Cell = ({ formattedDate, day, status, setSelectedDate }) => {
                     onClick={() => {
                         onDateClick(day);
                         setOpen(true);
+                        setView("save");
                     }}>
                     <Number>{formattedDate}</Number>
                     <Bg selected={status === "selected"} >{formattedDate}</Bg>

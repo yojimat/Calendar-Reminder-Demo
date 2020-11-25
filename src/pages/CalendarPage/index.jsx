@@ -7,7 +7,6 @@ import Typography from '@material-ui/core/Typography';
 import { Backdrop, createMuiTheme, Fade, makeStyles, Modal, ThemeProvider } from '@material-ui/core';
 import { blue, lightBlue } from '@material-ui/core/colors';
 import { CalendarPageContext } from './calendarPageProvider';
-import { RemindersProvider } from '../../components/reminders/remindersProvider';
 
 const theme = createMuiTheme({
     palette: {
@@ -26,7 +25,7 @@ const useStyles = makeStyles(theme => ({
 
 const CalendarPage = () => {
     const classes = useStyles(),
-        [open, setOpen] = useContext(CalendarPageContext);
+        { open, setOpen } = useContext(CalendarPageContext);
 
     return (
         <main>
@@ -36,22 +35,20 @@ const CalendarPage = () => {
                         Calendar Reminder Demo
                     </Typography>
                 </Header>
-                <RemindersProvider>
-                    <Calendar />
-                        <Modal open={open}
-                            onClose={() => setOpen(false)}
-                            closeAfterTransition
-                            BackdropComponent={Backdrop}
-                            BackdropProps={{
-                                timeout: 500,
-                            }}
-                            className={classes.modal}
-                        >
-                        <Fade in={open}>
-                            <ReminderView />
-                        </Fade>
-                    </Modal>
-                </RemindersProvider>
+                <Calendar />
+                <Modal open={open}
+                    onClose={() => setOpen(false)}
+                    closeAfterTransition
+                    BackdropComponent={Backdrop}
+                    BackdropProps={{
+                        timeout: 500,
+                    }}
+                    className={classes.modal}
+                >
+                    <Fade in={open}>
+                        <ReminderView />
+                    </Fade>
+                </Modal>
                 <MyFooter />
             </ThemeProvider>
         </main >

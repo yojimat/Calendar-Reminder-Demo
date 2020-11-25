@@ -79,12 +79,3 @@ export const Bg = styled.span`
     opacity: ${props => props.selected ? 0.1 : 0};
     transition: ${props => props.selected ? ".5s ease-in" : ".25s ease-out"};
 `;
-
-export const ReminderStampContainer = styled.div`
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 1em;
-    width: 100%;
-`;

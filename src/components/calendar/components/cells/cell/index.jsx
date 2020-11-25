@@ -1,59 +1,44 @@
 import { CalendarPageProvider, CalendarPageContext } from '../../../../../pages/CalendarPage/calendarPageProvider';
-import { getDate } from 'date-fns';
-import React, { useState, useEffect, useContext } from 'react'
-import { CellCol, Number, Bg, ReminderStampContainer } from './cell.styles';
-import ReminderStamp from "./reminderStamp";
-import { RemindersProvider, RemindersContext } from '../../../../reminders/remindersProvider';
+import React, { useState, useContext, useEffect } from 'react';
+import { CellCol, Number, Bg } from './cell.styles';
+import ReminderStampList from './reminderStampList';
+import { isSameMonth, isSameDay, isToday } from 'date-fns';
 
-const Cell = ({ formattedDate, day, status, setSelectedDate }) => {
-    const [reminderStampList, setReminderStampList] = useState([])
-        , [open, setOpen] = useContext(CalendarPageContext)
-        , { setView, reminderList } = useContext(RemindersContext);
+const setStatusHandler = (day, monthStart, selectedDate) => {
+    if (!isSameMonth(day, monthStart))
+        return "disabled"
+    else if (isSameDay(day, selectedDate))
+        return "selected"
+    else if (isToday(day))
+        return "presentDay"
+    else
+        return "normal";
+};
 
-    useEffect(() => {
-        const newArray = reminderList.filter(element => element.day === getDate(day));
-        setReminderStampList([...newArray]);
-    }, [reminderList]);
+const Cell = ({ formattedDate, fullDate, monthStart }) => {
+    const { setOpen, selectedDate, setSelectedDate } = useContext(CalendarPageContext)
+        , [status, setStatus] = useState(setStatusHandler(fullDate, monthStart, selectedDate));
 
-    const onDateClick = day => setSelectedDate(day);
+    useEffect(() => setStatus(setStatusHandler(fullDate, monthStart, selectedDate))
+        , [selectedDate, fullDate, monthStart])
 
-    const filterReminderStamp = () => {
-        const filteredList = reminderStampList.filter(el => el.day === getDate(day))
-            .map((el, index) =>
-                <ReminderStamp reminder={el}
-                    setOpen={setOpen} 
-                    setView={setView} 
-                    key={index} />);
-
-        if (filteredList.length > 5)
-            return <ReminderStamp
-                colorValue={"#0fb5e9"}
-                key={0} fullStamp
-                setView={setView} 
-                setOpen={setOpen} />
-
-        return filteredList;
+    const onDateClick = fullDate => {
+        setSelectedDate(fullDate)
+        setOpen(true);
     };
 
     return (
         <CalendarPageProvider>
-            <RemindersProvider>
-                <CellCol
-                    status={status}
-                    onClick={() => {
-                        onDateClick(day);
-                        setOpen(true);
-                        setView("save");
-                    }}>
-                    <Number>{formattedDate}</Number>
-                    <Bg selected={status === "selected"} >{formattedDate}</Bg>
-                    <ReminderStampContainer>
-                        {filterReminderStamp()}
-                    </ReminderStampContainer>
-                </CellCol>
-            </RemindersProvider>
+            <CellCol status={status} className="cellCol"
+                onClick={() => onDateClick(fullDate)}>
+                <Number>{formattedDate}</Number>
+                <Bg selected={status === "selected" || status === "presentDay"}>
+                    {formattedDate}
+                </Bg>
+                <ReminderStampList fullDate={fullDate} />
+            </CellCol>
         </CalendarPageProvider>
     )
 }
 
-export default Cell
+export default Cell;

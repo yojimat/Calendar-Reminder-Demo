@@ -11,4 +11,12 @@ const dayValidation = (value, oldvalue) => {
     return number;
 };
 
-export { maxLengthValidation, dayValidation };
+const alphaOnly = (value, oldValue) => {
+    const regex = /\d/g,
+        isThereANumber = regex.test(value);
+    if (isThereANumber)
+        return oldValue;
+    return value;
+}
+
+export { maxLengthValidation, dayValidation, alphaOnly };

@@ -65,5 +65,8 @@ export const Panel = styled.div`
     #gridListReminder {       
         height: 75vh;
         padding: 1em;
+        display: flex;
+        flex-direction: column;
+        justify-content: start;
     }
 `;

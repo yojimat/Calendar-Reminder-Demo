@@ -20,13 +20,14 @@ const setColor = ({ backgroundColor }) => {
 
 export const Stamp = styled.div`
     border-radius: 10px;
-    font-size: 10px;
+    font-size: ${({fullStamp }) => fullStamp ? "15px" : "10px" };
     text-align: center;
     background-color: ${({ backgroundColor }) => backgroundColor};
     width: 50%;
     color: ${setColor};
     z-index: 1;
     transition: all .2s ease-in-out; 
+
 
     :hover {
         transform: scale(1.1); 

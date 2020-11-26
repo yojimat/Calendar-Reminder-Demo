@@ -1,18 +1,18 @@
 import { Grid, Typography, Divider, GridList, GridListTile, IconButton } from '@material-ui/core';
-import React from 'react'
+import React, { useContext } from 'react'
 import Reminder from './reminder';
 import NoteAddIcon from '@material-ui/icons/NoteAdd';
+import { CalendarPageContext } from '../../../pages/CalendarPage/calendarPageProvider';
+import { filterReminderListByDate, sortByTime } from '../../../utility';
+import { getDate } from 'date-fns';
 
-const List = ({ setEdit, reminderList, dayListValue = "1", setView }) => {
-    const setList = ({text, color, time, city, uuid}, index) => {
+const List = () => {
+    const { selectedDate, setSaveView, allDaysReminderList } = useContext(CalendarPageContext);
+
+    const setList = (reminder) => {
         return (
-            <GridListTile key={index} cols={1} >
-                <Reminder textValue={text} 
-                    colorValue={color} 
-                    timeValue={time} 
-                    cityValue={city} 
-                    uuidValue={uuid}
-                    setEdit={setEdit}/>
+            <GridListTile key={reminder.uuid} cols={1} >
+                <Reminder reminder={reminder} />
             </GridListTile>
         )
     }
@@ -26,20 +26,22 @@ const List = ({ setEdit, reminderList, dayListValue = "1", setView }) => {
                     direction="row" container
                     justify="space-between">
                     <Typography component="h3" variant="h6">
-                        Reminder List for day {dayListValue}
+                        Reminder List for day {getDate(selectedDate)}
                     </Typography>
                     <IconButton color="primary"
                         size="small"
                         component="span"
-                        onClick={() => setView("save")}>
+                        onClick={() => setSaveView()}>
                         <NoteAddIcon />
                     </IconButton>
                 </Grid>
                 <Divider variant="middle" component="hr" />
-                <Grid item
-                    id="gridListReminderContainer">
+                <Grid item>
                     <GridList cols={1} cellHeight={'auto'} id="gridListReminder">
-                        {reminderList.length > 0 ? reminderList.map(setList) :
+                        {allDaysReminderList.length > 0 ?
+                            filterReminderListByDate(selectedDate, allDaysReminderList)
+                                .sort(sortByTime)
+                                .map(setList) :
                             <Typography component="h4" variant="h6">
                                 There are no reminders in this day.
                             </Typography>}

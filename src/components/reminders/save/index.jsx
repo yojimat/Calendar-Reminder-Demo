@@ -6,68 +6,94 @@ import {
     Typography
 } from '@material-ui/core'
 import { v4 as uuidv4 } from 'uuid';
-import { maxLengthValidation, dayValidation } from './validation';
+import { maxLengthValidation, dayValidation, alphaOnly } from './validation';
 import { CalendarPageContext } from '../../../pages/CalendarPage/calendarPageProvider';
-import { getFullDateByDayAndTime, getTimeByFullDate } from '../../../utility';
+import { getFullDateByDayAndTime, getRandomHexColor, getTimeByFullDate } from '../../../utility';
 import { getDate } from 'date-fns';
 
-const Save = ({ reminder = null }) => {
-    const [color, setColor] = useState("#0fb5e9"),
-        [text, setText] = useState(""),
-        [day, setDay] = useState(""),
-        [time, setTime] = useState(""),
-        [city, setCity] = useState(""),
-        [uuid, setUuid] = useState("");
+const reminderObject = selectedDate => {
+    return {
+        text: "",
+        day: getDate(selectedDate),
+        time: "",
+        city: "",
+        color: getRandomHexColor()
+    }
+}
 
+const insertReminder = (prevState, reminderToSet) => {
+    return [...prevState, reminderToSet];
+};
+
+const updateReminder = (prevState, foundElement, reminderToSet) => {
+    const index = prevState.indexOf(foundElement),
+        newArray = [...prevState];
+
+    reminderToSet.uuid = foundElement.uuid;
+    newArray[index] = reminderToSet;
+    return newArray;
+};
+
+const formReminderToReminder = (formReminder, selectedDate) => {
+    const { color, day, time, city, text } = formReminder;
+    const reminder = {
+        color,
+        fullDate: getFullDateByDayAndTime(selectedDate, day, time),
+        city,
+        uuid: uuidv4(),
+        text,
+    };
+    return reminder;
+}
+
+const Save = ({ reminder = null }) => {
     const { selectedDate, setSelectedDate,
         setListView, setAllDaysReminderList, setOpen } = useContext(CalendarPageContext);
 
+    const [formReminder, setFormReminder] = useState(reminderObject(selectedDate));
+
+    const handleChange = (e, validationFunction, oldValue) => {
+        const name = e.target.name;
+        let value = e.target.value;
+
+        if(validationFunction)
+            value = validationFunction(value, oldValue);
+
+        setFormReminder({ ...formReminder, [name]: value });
+    };
+
     const handleSubmit = event => {
         event.preventDefault();
-            
-        const reminder = {
-            color,
-            fullDate: getFullDateByDayAndTime(selectedDate, day, time),
-            city,
-            uuid: uuidv4(),
-            text
-        };
+        setAllDaysReminderList(prevState => {
+            let uuidToFind = null;
+            if (reminder)
+                uuidToFind = reminder.uuid;
 
-        setAllDaysReminderList(prev => {
-            const element = prev.find(element => element.uuid === uuid);
+            const foundElement = prevState.find(element => element.uuid === uuidToFind)
+                , reminderToSet = formReminderToReminder(formReminder, selectedDate);
 
-            if (!element)
-                return [...prev, reminder];
+            if (!foundElement)
+                return insertReminder(prevState, reminderToSet);
 
-            const index = prev.indexOf(element),
-                newArray = [...prev];
-
-            reminder.uuid = uuid;
-            newArray[index] = reminder;
-            return newArray;
+            return updateReminder(prevState, foundElement, reminderToSet);
         });
-
-        setSelectedDate(parseInt(day));
-        // setListView("list");
-        setOpen(false);
+        const fullDate = getFullDateByDayAndTime(selectedDate, formReminder.day, formReminder.time);
+        
+        setSelectedDate(fullDate);
+        setListView("list");
+        setOpen(true);
     };
 
     useEffect(() => {
         if (!reminder)
             return;
 
-        const { color, text, city, uuid, fullDate } = reminder;
+        const { fullDate, text, color, city } = reminder;
 
         const time = getTimeByFullDate(fullDate),
             day = getDate(fullDate);
 
-        setColor(color);
-        setText(text);
-        setCity(city);
-        setDay(day);
-        setTime(time);
-        setUuid(uuid);
-
+        setFormReminder({ text, color, city, time, day });
     }, [reminder])
 
     return (
@@ -88,9 +114,8 @@ const Save = ({ reminder = null }) => {
                     autoComplete="text"
                     autoFocus
                     placeholder="Max 30 characters"
-                    onChange={e =>
-                        setText(maxLengthValidation(e.target.value), text)}
-                    value={text}
+                    onChange={(e) => handleChange(e, maxLengthValidation, formReminder.text)}
+                    value={formReminder.text}
                 />
                 <Grid container spacing={4}>
                     <Grid item xs={6}>
@@ -103,9 +128,8 @@ const Save = ({ reminder = null }) => {
                             id="day"
                             autoComplete="day"
                             type="number"
-                            onChange={e =>
-                                setDay(dayValidation(e.target.value, day))}
-                            value={day}
+                            onChange={(e) => handleChange(e, dayValidation, formReminder.day)}
+                            value={formReminder.day}
                         />
                     </Grid>
                     <Grid item xs={3}>
@@ -117,8 +141,8 @@ const Save = ({ reminder = null }) => {
                             id="time"
                             autoComplete="time"
                             type="time"
-                            onChange={e => setTime(e.target.value)}
-                            value={time}
+                            onChange={handleChange}
+                            value={formReminder.time}
                         />
                     </Grid>
                 </Grid>
@@ -131,8 +155,8 @@ const Save = ({ reminder = null }) => {
                             name="city"
                             id="city"
                             autoComplete="city"
-                            onChange={e => setCity(e.target.value)}
-                            value={city}
+                            onChange={(e) => handleChange(e, alphaOnly, formReminder.city)}
+                            value={formReminder.city}
                         />
                     </Grid>
                     <Grid item xs={6}>
@@ -142,8 +166,9 @@ const Save = ({ reminder = null }) => {
                             </Typography>
                             <input
                                 type="color"
-                                value={color}
-                                onChange={e => setColor(e.target.value)}
+                                name="color"
+                                value={formReminder.color}
+                                onChange={handleChange}
                             />
                         </Box>
                     </Grid>

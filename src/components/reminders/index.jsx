@@ -1,15 +1,9 @@
-import React, { useState } from 'react'
-import List from './list';
+import React, { useContext } from 'react'
+import { CalendarPageContext } from '../../pages/CalendarPage/calendarPageProvider';
 import { Panel } from './reminders.styles'
-import Save from './save';
-
-// const getSaveView = () => <Save />
-const getSaveView = () => <h1>TEST</h1>
-
-const getListView = () => <List />
 
 const ReminderView = () => {
-    const [view, setView] = useState(getSaveView());
+    const { view } = useContext(CalendarPageContext);
 
     return (
         <Panel id="panel">

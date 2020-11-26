@@ -1,19 +1,25 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext } from 'react';
 import { CalendarPageContext } from '../../../../../../../pages/CalendarPage/calendarPageProvider';
+import { getTimeByFullDate } from '../../../../../../../utility';
 import { Stamp } from './stamp.styles';
 
-const ReminderStamp = ({ reminder, fullDate, fullStamp }) => {
-    const { setSelectedDate, setOpen } = useContext(CalendarPageContext);
+const ReminderStamp = ({ reminder, fullStamp }) => {
+    const { setSelectedDate,
+        setOpen,
+        setSaveView } = useContext(CalendarPageContext);
 
-    const onStampClick = (fullDate) => {
-        setSelectedDate(fullDate)
+    const onStampClick = (event) => {
+        event.stopPropagation();
+        
+        setSelectedDate(reminder.fullDate)
+        setSaveView(reminder);
         setOpen(true);
     }
 
     return (
-        <Stamp backgroundColor={fullStamp ? "#0fb5e9" : reminder.color} 
-            onClick={() => onStampClick(fullDate)}>
-            {fullStamp ? "More than 5 items" : reminder.time}
+        <Stamp backgroundColor={fullStamp ? "#0fb5e9" : reminder.color}
+            onClick={(event) => onStampClick(event)}>
+            {fullStamp ? "More than 5 items" : getTimeByFullDate(reminder.fullDate)}
         </Stamp>
     )
 }

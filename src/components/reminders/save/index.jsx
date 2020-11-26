@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import EventIcon from '@material-ui/icons/Event';
 import {
     Box,
@@ -6,8 +6,12 @@ import {
     Typography
 } from '@material-ui/core'
 import { v4 as uuidv4 } from 'uuid';
+import { maxLengthValidation, dayValidation } from './validation';
+import { CalendarPageContext } from '../../../pages/CalendarPage/calendarPageProvider';
+import { getFullDateByDayAndTime, getTimeByFullDate } from '../../../utility';
+import { getDate } from 'date-fns';
 
-const Save = ({ setView, setReminderList, setDayListValue, reminder=null }) => {
+const Save = ({ reminder = null }) => {
     const [color, setColor] = useState("#0fb5e9"),
         [text, setText] = useState(""),
         [day, setDay] = useState(""),
@@ -15,54 +19,55 @@ const Save = ({ setView, setReminderList, setDayListValue, reminder=null }) => {
         [city, setCity] = useState(""),
         [uuid, setUuid] = useState("");
 
-    const maxLengthValidation = value => {
-        if(value.length > 30)
-            return;
-        setText(value);
-    };
+    const { selectedDate, setSelectedDate,
+        setListView, setAllDaysReminderList, setOpen } = useContext(CalendarPageContext);
 
-    const dayValidation = value => {
-        const number = parseInt(value)
-        if(number < 1 || number > 31)
-            return;
-        setDay(number)
-    };
-    
     const handleSubmit = event => {
         event.preventDefault();
-        const reminder = {color, 
-            text, 
-            day: parseInt(day) , 
-            time, 
-            city, 
-            uuid: uuidv4()};
-        setReminderList(prev => {
+            
+        const reminder = {
+            color,
+            fullDate: getFullDateByDayAndTime(selectedDate, day, time),
+            city,
+            uuid: uuidv4(),
+            text
+        };
+
+        setAllDaysReminderList(prev => {
             const element = prev.find(element => element.uuid === uuid);
-            if(element){
-                const index = prev.indexOf(element),
-                    newArray = [...prev];
-                    
-                reminder.uuid = uuid;
-                newArray[index] = reminder;
-                return newArray;
-            }
-            else
-                return [...prev, reminder]
-        })
-        setDayListValue(parseInt(day));
-        setView("list");
+
+            if (!element)
+                return [...prev, reminder];
+
+            const index = prev.indexOf(element),
+                newArray = [...prev];
+
+            reminder.uuid = uuid;
+            newArray[index] = reminder;
+            return newArray;
+        });
+
+        setSelectedDate(parseInt(day));
+        // setListView("list");
+        setOpen(false);
     };
 
     useEffect(() => {
-        if(!reminder)
+        if (!reminder)
             return;
-        const {color, text, city, day, time, uuid} = reminder;
-        setColor(color)
-        setText(text)
-        setCity(city)
-        setDay(day)
-        setTime(time)
-        setUuid(uuid)
+
+        const { color, text, city, uuid, fullDate } = reminder;
+
+        const time = getTimeByFullDate(fullDate),
+            day = getDate(fullDate);
+
+        setColor(color);
+        setText(text);
+        setCity(city);
+        setDay(day);
+        setTime(time);
+        setUuid(uuid);
+
     }, [reminder])
 
     return (
@@ -83,7 +88,8 @@ const Save = ({ setView, setReminderList, setDayListValue, reminder=null }) => {
                     autoComplete="text"
                     autoFocus
                     placeholder="Max 30 characters"
-                    onChange={e => maxLengthValidation(e.target.value)}
+                    onChange={e =>
+                        setText(maxLengthValidation(e.target.value), text)}
                     value={text}
                 />
                 <Grid container spacing={4}>
@@ -97,7 +103,8 @@ const Save = ({ setView, setReminderList, setDayListValue, reminder=null }) => {
                             id="day"
                             autoComplete="day"
                             type="number"
-                            onChange={e => dayValidation(e.target.value)}
+                            onChange={e =>
+                                setDay(dayValidation(e.target.value, day))}
                             value={day}
                         />
                     </Grid>

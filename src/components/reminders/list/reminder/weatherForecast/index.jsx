@@ -58,8 +58,11 @@ const WeatherForecast = ({ city }) => {
     }
 
     useEffect(() => {
-        fetchData();
-    });
+        if (isToday(selectedDate))
+            fetchData();
+        else
+            setIsLoading(false);
+    }, [selectedDate]);
 
     if (isLoading)
         return <CircularProgress color="secondary" />;

@@ -1,4 +1,4 @@
-import { CalendarPageProvider, CalendarPageContext } from '../../../../../pages/CalendarPage/calendarPageProvider';
+import { CalendarPageContext } from '../../../../../pages/CalendarPage/calendarPageProvider';
 import React, { useState, useContext, useEffect } from 'react';
 import { CellCol, Number, Bg } from './cell.styles';
 import ReminderStampList from './reminderStampList';

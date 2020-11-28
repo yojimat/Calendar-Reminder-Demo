@@ -3,7 +3,7 @@ import { addMonths, subMonths, format } from 'date-fns';
 import { Header, ColStart, ColEnd, Icon } from './header.styles';
 import { ColCenter } from "../../calendar.styles";
 
-const CalendarHeader = ({ currentMonth, setCurrentMonth }) => {
+const CalendarHeader = ({ currentMonth = new Date(), setCurrentMonth }) => {
     const dateFormat = "MMMM yyyy";
     
     const goNextMonth = () => {
@@ -18,12 +18,12 @@ const CalendarHeader = ({ currentMonth, setCurrentMonth }) => {
     return (
       <Header>
         <ColStart>
-          <Icon onClick={goPrevMonth}>
+          <Icon onClick={goPrevMonth} data-testid="MonthBackwards">
             chevron_left
           </Icon>
         </ColStart>
         <ColCenter>
-          <span>
+          <span data-testid="MonthYearSpan">
             {format(currentMonth, dateFormat)}
           </span>
         </ColCenter>

@@ -23,7 +23,7 @@ const Reminder = ({ reminder }) => {
 
     useEffect(() => {
         paintReminder(color, uuid);
-    }, []);
+    }, [color, uuid]);
 
     return (
         <>

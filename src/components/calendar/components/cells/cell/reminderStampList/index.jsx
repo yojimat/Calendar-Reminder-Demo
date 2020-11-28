@@ -4,7 +4,7 @@ import { ReminderStampContainer } from "./reminderStampList.styles";
 import { CalendarPageContext } from '../../../../../../pages/CalendarPage/calendarPageProvider';
 import { filterReminderListByDate, sortByTime } from '../../../../../../utility';
 
-const ReminderStampList = ({ fullDate }) => {
+const ReminderStampList = ({ fullDate = new Date() }) => {
     const { allDaysReminderList } = useContext(CalendarPageContext);
 
     const filterReminderStampList = () => {
@@ -12,7 +12,7 @@ const ReminderStampList = ({ fullDate }) => {
             filterReminderListByDate(fullDate, allDaysReminderList);
 
         if (filteredList.length > 5)
-            return <ReminderStamp fullStamp />
+            return <ReminderStamp fullDate={fullDate} fullStamp />
 
         const stampsList = filteredList
             .sort(sortByTime)

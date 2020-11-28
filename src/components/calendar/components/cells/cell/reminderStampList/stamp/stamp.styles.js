@@ -20,7 +20,7 @@ const setColor = ({ backgroundColor }) => {
 
 export const Stamp = styled.div`
     border-radius: 10px;
-    font-size: ${({fullStamp }) => fullStamp ? "15px" : "10px" };
+    font-size: 10px;
     text-align: center;
     background-color: ${({ backgroundColor }) => backgroundColor};
     width: 50%;
